@@ -51,6 +51,52 @@ python -m student.agent --hub ws://<IP-máy-giáo-viên>:8765/ws --name "PC-01" 
 Máy học sinh sẽ xuất hiện trong lưới của giáo viên. Nhấn **▶ Theo dõi** để nhận
 thumbnail, **🔒 Khóa tất cả** để khóa, hay dùng nút trên từng thẻ máy.
 
+## Đóng gói & cài đặt
+
+Có 2 cách triển khai.
+
+### Cách A — Cài bằng pip (cần Python 3.9+ trên máy)
+
+```bash
+pip install .
+# Sau khi cài có 2 lệnh:
+classroom-hub --host 0.0.0.0 --port 8765          # máy giáo viên
+classroom-student --hub ws://<IP-GV>:8765/ws --room class-a --name "PC-01"
+```
+
+### Cách B — File chạy độc lập (máy học sinh KHÔNG cần cài Python)
+
+Dùng PyInstaller để tạo một file thực thi duy nhất cho mỗi vai trò. **Phải build
+trên đúng hệ điều hành đích** (build .exe trên Windows, binary Linux trên Linux…
+— PyInstaller không cross-compile).
+
+```bash
+# Windows:
+packaging\build.bat
+# Linux / macOS:
+bash packaging/build.sh
+```
+
+Kết quả nằm trong `packaging/dist/`:
+
+| File | Chạy ở đâu |
+|------|-----------|
+| `classroom-hub` / `classroom-hub.exe` | Máy giáo viên. Đã nhúng sẵn web console. |
+| `classroom-student` / `classroom-student.exe` | Mỗi máy học sinh. Không cần Python. |
+
+**Trên máy giáo viên:** chạy `classroom-hub.exe --port 8765`, rồi mở
+`http://<IP-máy-giáo-viên>:8765/`.
+
+**Trên mỗi máy học sinh:** chép `classroom-student.exe` và `run-student.bat`
+(trong `packaging/`) vào cùng thư mục, sửa dòng `set HUB=` trong file .bat cho
+đúng IP máy giáo viên, rồi chạy `run-student.bat`.
+
+**Tự khởi động cùng Windows:** nhấn `Win+R`, gõ `shell:startup`, bỏ một shortcut
+tới `run-student.bat` (hoặc `classroom-student.exe`) vào thư mục đó.
+
+> Lưu ý: mở cổng 8765 trên tường lửa máy giáo viên để các máy học sinh kết nối
+> được (hoặc tạo rule inbound cho `classroom-hub.exe`).
+
 ## Tính năng
 
 | Tính năng | Trạng thái |

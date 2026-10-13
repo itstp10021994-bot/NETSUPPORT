@@ -213,6 +213,30 @@ async def websocket_handler(request: web.Request) -> web.WebSocketResponse:
     return ws
 
 
+def _find_static_dir() -> str:
+    """Locate the teacher console's static assets.
+
+    Works in three deployment modes:
+    * running from the source tree,
+    * installed as a pip package (static shipped as package data),
+    * frozen by PyInstaller (extracted under ``sys._MEIPASS``).
+    """
+    import os
+    import sys
+
+    candidates = []
+    meipass = getattr(sys, "_MEIPASS", None)
+    if meipass:
+        candidates.append(os.path.join(meipass, "teacher", "static"))
+    here = os.path.dirname(os.path.abspath(__file__))
+    candidates.append(os.path.join(os.path.dirname(here), "teacher", "static"))
+    for path in candidates:
+        if os.path.isdir(path):
+            return path
+    # Fall back to the first candidate; aiohttp will error clearly if missing.
+    return candidates[-1]
+
+
 def build_app() -> web.Application:
     import os
 
@@ -225,11 +249,7 @@ def build_app() -> web.Application:
 
     app.router.add_get("/health", health)
 
-    static_dir = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        "teacher",
-        "static",
-    )
+    static_dir = _find_static_dir()
 
     async def index(_req: web.Request) -> web.StreamResponse:
         return web.FileResponse(os.path.join(static_dir, "index.html"))

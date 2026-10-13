@@ -5,3 +5,9 @@ __pycache__/
 .venv/
 venv/
 *.log
+# PyInstaller build artifacts
+packaging/build/
+packaging/dist/
+build/
+dist/
+*.spec.bak
