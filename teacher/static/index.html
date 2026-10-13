@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bảng điều khiển lớp học</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="dot" id="conn-dot"></span>
+      <strong>Classroom Console</strong>
+      <span class="muted" id="room-label"></span>
+    </div>
+    <div class="toolbar">
+      <label class="field">
+        Phòng
+        <input id="room-input" value="default" />
+      </label>
+      <button id="connect-btn" class="btn primary">Kết nối</button>
+      <span class="sep"></span>
+      <button data-action="monitor-on" class="btn">▶ Theo dõi</button>
+      <button data-action="monitor-off" class="btn">⏸ Dừng</button>
+      <button data-action="lock-all" class="btn warn">🔒 Khóa tất cả</button>
+      <button data-action="unlock-all" class="btn">🔓 Mở tất cả</button>
+      <button data-action="message-all" class="btn">✉ Gửi tin nhắn</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="empty" class="empty">Chưa có máy học sinh nào. Nhấn <b>Kết nối</b>.</div>
+    <div id="grid" class="grid"></div>
+  </main>
+
+  <!-- per-student card template -->
+  <template id="card-tpl">
+    <figure class="card">
+      <div class="thumb-wrap">
+        <img class="thumb" alt="screen" />
+        <span class="lock-badge" title="Đã khóa">🔒</span>
+      </div>
+      <figcaption>
+        <div class="name"></div>
+        <div class="win muted"></div>
+      </figcaption>
+      <div class="card-actions">
+        <button data-op="lock">🔒</button>
+        <button data-op="unlock">🔓</button>
+        <button data-op="message">✉</button>
+      </div>
+    </figure>
+  </template>
+
+  <script src="/app.js"></script>
+</body>
+</html>
